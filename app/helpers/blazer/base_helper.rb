@@ -23,6 +23,8 @@ module Blazer
         else
           link_to value, value, target: "_blank"
         end
+      elsif value.respond_to?(:force_encoding)
+        value.force_encoding(Encoding::UTF_8)
       else
         value
       end
