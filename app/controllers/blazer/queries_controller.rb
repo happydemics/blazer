@@ -121,6 +121,9 @@ module Blazer
           @just_cached = !@result.error && @result.cached_at.present?
           @cached_at = nil
           params[:data_source] = nil
+
+          set_forecast
+
           render_run
         elsif Time.now > Time.at(@timestamp + (@data_source.timeout || 600).to_i + 5)
           # query lost
@@ -159,12 +162,7 @@ module Blazer
           @cached_at = @result.cached_at
           @just_cached = @result.just_cached
 
-          @forecast = @query && @result.forecastable? && params[:forecast]
-          if @forecast
-            @result.forecast
-            @forecast_error = @result.forecast_error
-            @forecast = @forecast_error.nil?
-          end
+          set_forecast
 
           render_run
         else
@@ -461,6 +459,15 @@ module Blazer
           rows << row
         end
         @rows = rows
+      end
+    end
+
+    def set_forecast
+      @forecast = @query && @result.forecastable? && params[:forecast]
+      if @forecast
+        @result.forecast
+        @forecast_error = @result.forecast_error
+        @forecast = @forecast_error.nil?
       end
     end
   end
