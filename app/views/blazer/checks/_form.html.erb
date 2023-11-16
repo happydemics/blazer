@@ -56,10 +56,12 @@
     </div>
   <% end %>
 
-  <div class="form-group">
-    <%= f.label :emails %>
-    <%= f.text_field :emails, placeholder: "Optional, comma separated", class: "form-control" %>
-  </div>
+  <% if Blazer.email? %>
+    <div class="form-group">
+      <%= f.label :emails %>
+      <%= f.text_field :emails, placeholder: "Optional, comma separated", class: "form-control" %>
+    </div>
+  <% end %>
 
   <% if Blazer.slack? %>
     <div class="form-group">
@@ -68,7 +70,12 @@
     </div>
   <% end %>
 
-  <p class="text-muted">Emails <%= Blazer.slack? ? "and Slack notifications " : nil %>are sent when a check starts failing, and when it starts passing again.
+  <%
+    notification_types = []
+    notification_types << "Emails" if Blazer.email?
+    notification_types << "Slack" if Blazer.slack?
+  %>
+  <p class="text-muted"><%= notification_types.any? ? "#{notification_types.join(" and ")} notifications " : "Notifications " %>are sent when a check starts failing, and when it starts passing again.
   <p>
     <% if @check.persisted? %>
       <%= link_to "Delete", check_path(@check), method: :delete, "data-confirm" => "Are you sure?", class: "btn btn-danger" %>

@@ -11,7 +11,11 @@ module Blazer
     before_validation :fix_emails
 
     def split_emails
-      emails.to_s.downcase.split(",").map(&:strip)
+      if Blazer.email?
+        emails.to_s.downcase.split(",").map(&:strip)
+      else
+        []
+      end
     end
 
     def split_slack_channels
