@@ -20,7 +20,13 @@ module Blazer
 
     def split_slack_channels
       if Blazer.slack?
-        slack_channels.to_s.downcase.split(",").map(&:strip)
+        slack_channels.to_s.split(",").map(&:strip).map do|channel|
+          if channel =~ /\A#/
+            channel.downcase
+          else
+            channel.upcase
+          end
+        end
       else
         []
       end
